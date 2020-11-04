@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# create firstboot.service file
+echo '[Unit]
+Description =   Run script at first startup after all services are loaded
+Wants =         network-online.target
+After =         network.target network-online.target
+#                ^->former for compatibility, later actual target
+
+[Service]
+Type =          simple
+ExecStartPre =  /bin/sleep 10
+ExecStart =     /firstboot.sh
+
+[Install]
+WantedBy =      default.target
+' > /etc/systemd/system/firstboot.service
+
+
+echo '#!/bin/bash
+
+# make sure permissions are correct on ~/.ssh folder
+chown -R {{ index .Values "username" }}:{{ index .Values "username" }} /home/{{ index .Values "username" }}/.ssh
+
+# add self to ansible hosts list of pxe server and leave debug message on success and error
+curl -s "http://{{ index .Values "server" }}/hostonline?mac={{ index .Values "mac" }}" > /home/{{ index .Values "username" }}/ansible_ready 2> /home/{{ index .Values "username" }}/error
+# delete empty files afterwards
+find /home/{{ index .Values "username" }}/ -type f -empty -delete
+
+# remove firstboot files
+systemctl disable firstboot
+rm /etc/systemd/system/firstboot.service
+rm /firstboot.sh
+' > /firstboot.sh
+
+
+chmod +x /firstboot.sh
+systemctl enable firstboot

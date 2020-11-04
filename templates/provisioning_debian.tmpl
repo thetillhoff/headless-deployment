@@ -1,0 +1,22 @@
+#!ipxe
+
+# base-url must end with a slash
+set boot-url http://{{ index .data "server" }}
+
+# Figure out if client is 64-bit capable
+cpuid --ext 29 && set arch x64 || set arch x86
+cpuid --ext 29 && set archl amd64 || set archl i386
+
+# debian installer
+
+:debian-netinst
+echo Booting Debian 10.0.0 netinstaller
+sleep 1
+kernel ${boot-url}/netboot/debian-installer/amd64/linux initrd=initrd.gz
+initrd ${boot-url}/netboot/debian-installer/amd64/initrd.gz
+# hostname and domain are set before preseed file is loaded, so they have to be set here
+# auto=true is required to preseed locales like keyboard-layout etc.
+# the mac is not provided via template, instead it should be inserted by ipxe on the host.
+imgargs linux initrd=initrd.gz auto=true fb=false url=${boot-url}/preseed?mac=${net0/mac:hexhyp} hostname={{ index .data "hostname" }} domain=nodomain
+boot || goto failed
+goto start
