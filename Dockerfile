@@ -46,4 +46,4 @@ EXPOSE 53/udp
 EXPOSE 69/udp
 EXPOSE 69/tcp
 ## startup command
-CMD /home/start.sh && service nginx start && dnsmasq -C /home/dnsmasq.conf && cd /home/; /home/main
+CMD /home/start.sh && service nginx start && dnsmasq -C /etc/dnsmasq.conf && cd /home/; /home/main

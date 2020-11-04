@@ -12,4 +12,4 @@ tasks:
 
   run:
     cmds:
-      - docker run --rm --net=host --cap-add=NET_ADMIN -e SUBNET=192.168.1.0 -e USER=enforge -v $PWD/netboot:/netboot -v $PWD/hosts:/hosts --name headless-deployment headless-deployment
+      - docker run --rm --net=host --cap-add=NET_ADMIN -e SUBNET=192.168.1.0 -e USER=enforge -v $PWD/netboot:/netboot -v $PWD/hosts:/hosts -v $PWD/dnsmasq.conf:/etc/dnsmasq.conf --name headless-deployment headless-deployment
