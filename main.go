@@ -80,11 +80,8 @@ func writeKeyValue(filepath string, key string, value string) {
 		lines[linenumber] = line
 	}
 
-	content = strings.Join(lines, "\n")      // merge lines into one string
-	if !(strings.HasSuffix(content, "\n")) { // if content doesn't end with newline
-		content = content + "\n" // append newline
-	}
-	writeFile(filepath, content) // write content back to file
+	content = strings.Join(lines, "\n") // merge lines into one string
+	writeFile(filepath, content)        // write content back to file
 }
 
 // Extract IP out of http.Request and return it.
@@ -135,7 +132,8 @@ func generatePassword(length int) string {
 
 // generateSecurePassword generates a salted & encrypted password out of the specified plain password
 func generateSecurePassword(plain string) string {
-	out, err := exec.Command("mkpasswd -m sha-512 -S $(pwgen -ns 16 1) " + plain).Output()
+	params := []string{"-m", "sha-512", "-S", generatePassword(16), plain}
+	out, err := exec.Command("mkpasswd", params...).Output()
 	check(err)
 	return string(out)
 }
@@ -191,7 +189,7 @@ func preseedHandler(w http.ResponseWriter, r *http.Request) {
 		data["mac"] = mac                     // set mac for further communication
 		data["server"] = r.Host               // set own hostname for further data requests
 		data["hostname"] = mac                // name machines after their mac
-		data["username"] = getEnv("username") // set username
+		data["username"] = getEnv("USERNAME") // set username
 		data["passcrypt"] = securePassword    // set secure password string
 
 		// execute template
@@ -200,7 +198,7 @@ func preseedHandler(w http.ResponseWriter, r *http.Request) {
 
 		// save data to file
 		fileMutex.Lock()
-		writeKeyValue("/hosts", data["mac"], data["passcrypt"]) // either append to or replace in file (mac is key)
+		writeKeyValue("/hosts", data["mac"], plainPassword) // either append to or replace in file (mac is key)
 		fileMutex.Unlock()
 	}
 }

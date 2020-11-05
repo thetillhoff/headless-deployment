@@ -30,20 +30,18 @@ RUN cd /home/; /go/bin/go build -o main
 
 FROM tillhoff/debian
 ## install required software
-RUN apt-get install -y wget dnsmasq nginx
+# whois contains mkpasswd, which is used for password generation
+RUN apt-get install -y wget dnsmasq nginx whois pwgen
 ## retrieve files from previous stages
-COPY --from=ipxe-builder /home/ipxe.efi /netboot/
-COPY --from=ipxe-builder /home/undionly.kpxe /netboot/
+COPY --from=ipxe-builder /home/ipxe.efi /tftp/
+COPY --from=ipxe-builder /home/undionly.kpxe /tftp/
 COPY --from=go-builder /home/main /home/
 ## retrieve static files
-COPY ./dnsmasq.conf /home/
+COPY ./dnsmasq.conf /etc/dnsmasq.conf
 COPY ./nginx.conf /etc/nginx/sites-enabled/default
 COPY ./start.sh /home/
 COPY ./templates/* /home/
 ## final configuration
 RUN chmod +x /home/start.sh
-EXPOSE 53/udp
-EXPOSE 69/udp
-EXPOSE 69/tcp
 ## startup command
-CMD /home/start.sh && service nginx start && dnsmasq -C /etc/dnsmasq.conf && cd /home/; /home/main
+CMD /home/start.sh && service nginx start && dnsmasq -C /etc/dnsmasq.conf -u root --log-facility=/var/log/dnsmasq.log && cd /home/; /home/main

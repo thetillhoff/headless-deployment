@@ -20,12 +20,12 @@ WantedBy =      default.target
 echo '#!/bin/bash
 
 # make sure permissions are correct on ~/.ssh folder
-chown -R {{ index .Values "username" }}:{{ index .Values "username" }} /home/{{ index .Values "username" }}/.ssh
+chown -R {{ index . "username" }}:{{ index . "username" }} /home/{{ index . "username" }}/.ssh
 
 # add self to ansible hosts list of pxe server and leave debug message on success and error
-curl -s "http://{{ index .Values "server" }}/hostonline?mac={{ index .Values "mac" }}" > /home/{{ index .Values "username" }}/ansible_ready 2> /home/{{ index .Values "username" }}/error
+curl -s "http://{{ index . "server" }}/hostonline?mac={{ index . "mac" }}" > /home/{{ index . "username" }}/ansible_ready 2> /home/{{ index . "username" }}/error
 # delete empty files afterwards
-find /home/{{ index .Values "username" }}/ -type f -empty -delete
+find /home/{{ index . "username" }}/ -type f -empty -delete
 
 # remove firstboot files
 systemctl disable firstboot

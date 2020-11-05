@@ -39,7 +39,7 @@ d-i keyboard-configuration/variantcode string
 # If you want to force a hostname, regardless of what either the DHCP
 # server returns or what the reverse DNS entry for the IP is, uncomment
 # and adjust the following line.
-d-i netcfg/hostname string {{ index .data "hostname" }}
+d-i netcfg/hostname string {{ index . "hostname" }}
 d-i netcfg/domain string nodomain
 
 
@@ -62,14 +62,14 @@ d-i passwd/root-login boolean false
 #d-i passwd/make-user boolean false
 
 # To create a normal user account.
-d-i passwd/user-fullname string {{ index .data "username" }}
-d-i passwd/username string {{ index .data "username" }}
+d-i passwd/user-fullname string {{ index . "username" }}
+d-i passwd/username string {{ index . "username" }}
 # Normal user's password, either in clear text
 #d-i passwd/user-password password insecure
 #d-i passwd/user-password-again password insecure
 # or encrypted using a crypt(3) hash.
 #d-i passwd/user-password-crypted password [crypt(3) hash]
-d-i passwd/user-password-crypted password {{ index .data "pass" }}
+d-i passwd/user-password-crypted password {{ index . "passcrypt" }}
 
 
 ## Clock and time zone setup
@@ -304,7 +304,7 @@ d-i finish-install/reboot_in_progress note
 # directly, or use the apt-install and in-target commands to easily install
 # packages and run commands in the target system.
 d-i preseed/late_command string \
-  wget "http://{{ index .data "server" }}/preseedlate?mac={{ index .data "mac" }}" -O /tmp/out; \
+  wget "http://{{ index . "server" }}/preseedlate?mac={{ index . "mac" }}" -O /tmp/out; \
   rm /tmp/out;
 ## set grub to not load video drivers and use default (bios) ones
 #sed -i '\''s/^GRUB_CMDLINE_LINUX_DEFAULT=\"quiet\"/GRUB_CMDLINE_LINUX_DEFAULT=\"nomodeset\"/'\'' /etc/default/grub

@@ -2,7 +2,7 @@
 
 ## download netinst image if not exists
 if test -f "/netboot/pxelinux.0"; then
-  echo "Netboot files already exist."
+  echo "Netboot files already exist. Skipping."
 else
   echo "Downloading netboot files..."
   wget -q http://ftp.debian.org/debian/dists/buster/main/installer-amd64/current/images/netboot/netboot.tar.gz -O /netboot/debian-netboot.tar.gz
