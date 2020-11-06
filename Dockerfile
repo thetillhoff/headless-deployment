@@ -8,9 +8,7 @@ RUN git clone --depth 1 -b v1.20.1 git://git.ipxe.org/ipxe.git
 ## startup command
 RUN cd ipxe/src; \
   make bin-x86_64-efi/ipxe.efi; \
-  mv bin-x86_64-efi/ipxe.efi /home/; \
-  make bin/undionly.kpxe; \
-  mv bin/undionly.kpxe /home/;
+  mv bin-x86_64-efi/ipxe.efi /home/;
 
 
 FROM tillhoff/debian AS go-builder
@@ -34,7 +32,6 @@ FROM tillhoff/debian
 RUN apt-get install -y wget dnsmasq nginx whois pwgen
 ## retrieve files from previous stages
 COPY --from=ipxe-builder /home/ipxe.efi /tftp/
-COPY --from=ipxe-builder /home/undionly.kpxe /tftp/
 COPY --from=go-builder /home/main /home/
 ## retrieve static files
 COPY ./dnsmasq.conf /etc/dnsmasq.conf
