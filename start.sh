@@ -5,7 +5,7 @@ if test -f "/netboot/pxelinux.0"; then
   echo "Netboot files already exist. Skipping."
 else
   echo "Downloading netboot files..."
-  wget -q http://ftp.debian.org/debian/dists/buster/main/installer-amd64/current/images/netboot/netboot.tar.gz -O /netboot/debian-netboot.tar.gz
+  wget -q "http://ftp.nl.debian.org/debian/dists/buster/main/installer-amd64/20190702+deb10u6/images/netboot/netboot.tar.gz" -O /netboot/debian-netboot.tar.gz
   tar -xvzf /netboot/debian-netboot.tar.gz -C /netboot/
   rm /netboot/debian-netboot.tar.gz
   echo "Downloading netboot files finsished."
