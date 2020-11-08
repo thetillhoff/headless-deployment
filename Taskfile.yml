@@ -14,6 +14,6 @@ tasks:
     cmds:
       - docker build --no-cache -t headless-deployment .
 
-  run:
+  start:
     cmds:
-      - docker run --rm --net=host --cap-add=NET_ADMIN -e SUBNET=192.168.1.0 -e USERNAME=enforge -v $PWD/netboot:/netboot -v $PWD/hosts:/hosts --name headless-deployment headless-deployment
+      - docker run --rm -d --net=host --cap-add=NET_ADMIN -e SUBNET=192.168.1.0 -e USERNAME=enforge -v $PWD/netboot:/netboot -v $PWD/hosts:/hosts --name headless-deployment headless-deployment
