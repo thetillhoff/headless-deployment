@@ -1,4 +1,4 @@
-FROM tillhoff/debian AS ipxe-builder
+FROM thetillhoff/debian AS ipxe-builder
 ## install required software
 RUN apt-get install -y git binutils gcc liblzma-dev make mtools genisoimage perl syslinux
 ## set workdir
@@ -11,7 +11,7 @@ RUN cd ipxe/src; \
   mv bin-x86_64-efi/ipxe.efi /home/;
 
 
-FROM tillhoff/debian AS go-builder
+FROM thetillhoff/debian AS go-builder
 ## install required software
 RUN apt-get install -y wget git
 ## install required software
@@ -26,7 +26,7 @@ COPY main.go /home/
 RUN cd /home/; /go/bin/go build -o main
 
 
-FROM tillhoff/debian
+FROM thetillhoff/debian
 ## install required software
 # whois contains mkpasswd, which is used for password generation
 RUN apt-get install -y wget dnsmasq nginx whois pwgen
